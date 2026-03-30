@@ -301,6 +301,11 @@ func normalizeWorkflowSettings(settings n8nsdk.WorkflowSettings) n8nsdk.Workflow
 	if normalized.AvailableInMCP != nil && !*normalized.AvailableInMCP {
 		normalized.AvailableInMCP = nil
 	}
+	
+	// Clear AdditionalProperties to prevent fields returned by the n8n API
+	// (e.g. binaryMode) but rejected on PUT requests from being persisted
+	// in Terraform state, which causes "inconsistent result after apply".
+	normalized.AdditionalProperties = nil
 
 	// Return result.
 	return normalized
